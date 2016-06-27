@@ -4,12 +4,15 @@
 #ifndef  MPU_6050.h
 #define MPU_6050.h
 
+#define PULSE_DELAY 4
 
 class MPU_6050 {
     
     public:
 
-        void begin(uint8_t SDA_pin, uint8_t SCL_pin, uint8_t INT_pin);
+        MPU_6050();
+
+        void begin(uint8_t SDA_pin, uint8_t SCL_pin, uint8_t INT_pin); // Initialize & set Pins
 
         int readAccelX();
 
@@ -23,8 +26,16 @@ class MPU_6050 {
 
         int readGyroZ();
 
+        int readTemp();
+
     private:
 
+        uint8_t SDA_pin;
 
+        uint8_t SCL_pin;
 
-}
+        uint8_t INT_pin;
+        
+        void writeReg(uint8_t reg);
+
+};
