@@ -29,7 +29,7 @@ int MPU_6050::begin(uint8_t SDA_pin, uint8_t SCL_pin, uint8_t INT_pin) {
 
     startLine();
 
-    writeAddress(104, 0); // Write Address with AD0 to GND and RW to Write
+    return writeAddress(104, 0); // Write Address with AD0 to GND and RW to Write
 
     writeByte(B00111000); // Write to Register 56
 
@@ -39,7 +39,79 @@ int MPU_6050::begin(uint8_t SDA_pin, uint8_t SCL_pin, uint8_t INT_pin) {
 
 };
 
+int MPU_6050::readAccelX() {
 
+    uint8_t burstOne, burstTwo;
+
+    int16_t value;
+
+    startLine();
+
+    writeAddress(104, 0); // Write to address with RW to Write
+
+    writeByte(B00111011); // Set Register Address to 59
+
+    startLine(); // Send start protocol again
+
+    writeAddress(104, 1); // Write to address with RW to Read
+
+    pinMode(SDA_pin, INPUT);
+
+    for (uint8_t i = 0; i < 8; i++) {
+
+        digitalWrite(SCL_pin, HIGH);
+
+        burstOne |= (digitalRead(SDA_pin)<<i);
+
+        digitalWrite(SCL_pin, LOW);
+
+    }
+
+    pinMode(SDA_pin, OUTPUT);
+
+    digitalWrite(SDA_pin, LOW);
+
+    digitalWrite(SCL_pin, HIGH);
+
+    delayMicroseconds(PULSE_DELAY);
+
+    digitalWrite(SCL_pin, LOW);
+
+    pinMode(SDA_pin, INPUT); // Do it again for the second register
+
+    for (uint8_t i = 0; i < 8; i++) {
+
+        digitalWrite(SCL_pin, HIGH);
+
+        burstTwo |= (digitalRead(SDA_pin)<<i);
+
+        digitalWrite(SCL_pin, LOW);
+
+    }
+
+    pinMode(SDA_pin, OUTPUT);
+
+    digitalWrite(SDA_pin, HIGH);
+
+    digitalWrite(SCL_pin, HIGH);
+
+    delayMicroseconds(PULSE_DELAY);
+
+    digitalWrite(SCL_pin, LOW);
+
+    digitalWrite(SDA_pin, LOW);
+
+    endLine();
+
+    value |= burstTwo;
+
+    value <<= 8;
+
+    value |= burstOne;
+
+    return value;
+
+};
 
 
 
