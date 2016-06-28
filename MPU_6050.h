@@ -5,6 +5,7 @@
 #define MPU_6050.h
 
 #define PULSE_DELAY 4
+#define BITS_IN_ADDRESS 7
 
 class MPU_6050 {
     
@@ -12,7 +13,7 @@ class MPU_6050 {
 
         MPU_6050();
 
-        void begin(uint8_t SDA_pin, uint8_t SCL_pin, uint8_t INT_pin); // Initialize & set Pins
+        int begin(uint8_t SDA_pin, uint8_t SCL_pin, uint8_t INT_pin); // Initialize & set Pins
 
         int readAccelX();
 
@@ -35,7 +36,13 @@ class MPU_6050 {
         uint8_t SCL_pin;
 
         uint8_t INT_pin;
+
+        void startLine(); // Function to send start condition
         
-        void writeReg(uint8_t reg);
+        int writeAddress(uint8_t address, uint8_t RW); // Write the address to I2C
+
+        int writeByte(uint8_t val); // Write data to I2C
+
+        void endLine(); // Function to send stop condition
 
 };
