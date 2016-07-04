@@ -41,79 +41,39 @@ int MPU_6050::begin(uint8_t SDA_pin, uint8_t SCL_pin, uint8_t INT_pin) {
 
 int MPU_6050::readAccelX() {
 
-    uint8_t burstOne, burstTwo;
-
-    int16_t value;
-
-    startLine();
-
-    writeAddress(104, 0); // Write to address with RW to Write
-
-    writeByte(B00111011); // Set Register Address to 59
-
-    startLine(); // Send start protocol again
-
-    writeAddress(104, 1); // Write to address with RW to Read
-
-    pinMode(SDA_pin, INPUT);
-
-    for (uint8_t i = 0; i < 8; i++) {
-
-        digitalWrite(SCL_pin, HIGH);
-
-        burstOne |= (digitalRead(SDA_pin)<<i);
-
-        digitalWrite(SCL_pin, LOW);
-
-    }
-
-    pinMode(SDA_pin, OUTPUT);
-
-    digitalWrite(SDA_pin, LOW);
-
-    digitalWrite(SCL_pin, HIGH);
-
-    delayMicroseconds(PULSE_DELAY);
-
-    digitalWrite(SCL_pin, LOW);
-
-    pinMode(SDA_pin, INPUT); // Do it again for the second register
-
-    for (uint8_t i = 0; i < 8; i++) {
-
-        digitalWrite(SCL_pin, HIGH);
-
-        burstTwo |= (digitalRead(SDA_pin)<<i);
-
-        digitalWrite(SCL_pin, LOW);
-
-    }
-
-    pinMode(SDA_pin, OUTPUT);
-
-    digitalWrite(SDA_pin, HIGH);
-
-    digitalWrite(SCL_pin, HIGH);
-
-    delayMicroseconds(PULSE_DELAY);
-
-    digitalWrite(SCL_pin, LOW);
-
-    digitalWrite(SDA_pin, LOW);
-
-    endLine();
-
-    value |= burstTwo;
-
-    value <<= 8;
-
-    value |= burstOne;
-
-    return value;
+    return readTwoBytes(B00111011); // Return values from register 59 & 60
 
 };
 
+int MPU_6050::readAccelY() {
 
+    return readTwoBytes(B00111101); // Return values from register 61 & 62
+
+};
+
+int MPU_6050::readAccelZ() {
+
+    return readTwoBytes(B00111111); // Return values from register 63 & 64
+
+};
+
+int MPU_6050::readGyroX() {
+
+    return readTwoBytes(B01000011); // Return values from register 67 & 68
+
+};
+
+int MPU_6050::readGyroY() {
+
+    return readTwoBytes(B01000101); // Return values from register 69 & 70
+
+};
+
+int MPU_6050::readGyroZ() {
+
+    return readTwoBytes(B01000111); // Return values from register 71 & 72
+
+};
 
 
 
@@ -153,7 +113,7 @@ int MPU_6050::writeAddress(uint8_t address, uint8_t RW) {
     
     for (uint8_t i = 0; i < BITS_IN_ADDRESS; i++) {
 
-        digitalWrite(SDA_pin, ((address>>i) & B00000001); // Write bits of address, starting with rightmost bit
+        digitalWrite(SDA_pin, ((address>>i) & B00000001)); // Write bits of address, starting with rightmost bit
 
         digitalWrite(SCL_pin, HIGH);
 
@@ -230,5 +190,83 @@ int MPU_6050::writeByte(uint8_t val) {
     digitalWrite(SCL_pin, LOW);
 
     pinMode(SDA_pin, OUTPUT); // Set SDA back to Output
+
+};
+
+int MPU_6050::readTwoBytes(uint8_t intReg) {
+
+    uint8_t burstOne, burstTwo, bitIn;
+
+    uint16_t value;
+
+    startLine();
+
+    writeAddress(104, 0); // Write to address with RW to Write
+
+    writeByte(intReg); // Set Register Address to 59
+
+    startLine(); // Send start protocol again
+
+    writeAddress(104, 1); // Write to address with RW to Read
+
+    pinMode(SDA_pin, INPUT);
+
+    for (uint8_t i = 0; i < 8; i++) {
+
+        digitalWrite(SCL_pin, HIGH);
+
+        bitIn = digitalRead(SDA_pin);
+
+        burstOne |= (bitIn<<i);
+
+        digitalWrite(SCL_pin, LOW);
+
+    }
+
+    pinMode(SDA_pin, OUTPUT);
+
+    digitalWrite(SDA_pin, LOW); // ACK Condition
+
+    digitalWrite(SCL_pin, HIGH);
+
+    delayMicroseconds(PULSE_DELAY);
+
+    digitalWrite(SCL_pin, LOW);
+
+    pinMode(SDA_pin, INPUT); // Do it again for the second register
+
+    for (uint8_t i = 0; i < 8; i++) {
+
+        digitalWrite(SCL_pin, HIGH);
+
+        bitIn = digitalRead(SDA_pin);
+
+        burstTwo |= (bitIn<<i);
+
+        digitalWrite(SCL_pin, LOW);
+
+    }
+
+    pinMode(SDA_pin, OUTPUT);
+
+    digitalWrite(SDA_pin, HIGH); // NACK Condition
+
+    digitalWrite(SCL_pin, HIGH);
+
+    delayMicroseconds(PULSE_DELAY);
+
+    digitalWrite(SCL_pin, LOW);
+
+    digitalWrite(SDA_pin, LOW);
+
+    endLine(); // Send End Condition
+
+    value |= burstTwo; // Combine Bytes
+
+    value <<= 8;
+
+    value |= burstOne;
+
+    return burstOne; // Return the 16 bit int
 
 };
