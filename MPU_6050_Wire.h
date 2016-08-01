@@ -40,6 +40,14 @@ class MPU_6050_Wire {
 
         int16_t readTemp(); // Read Internal Temperiture Register
 
+        double accelInGs(int16_t rawAccel);
+
+        double gyroInDegPerSec(int16_t rawGyro);
+
+        double tempInCelcius(int16_t rawTemp);
+
+        uint8_t AFS, GFS;
+
     private:
 
         uint8_t address;

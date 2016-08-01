@@ -24,6 +24,7 @@ void MPU_6050_Wire::begin(uint8_t address) {
 void MPU_6050_Wire::setAccelConfig(uint8_t AFS) {
     Wire.beginTransmission(this->address);
     Wire.write(byte(ACCEL_CONFIG_REG));
+    this->AFS = AFS;
     switch (AFS) {
         case 0:
             Wire.write(B00000000); // Set Full Scale Range to +- 2g & Set Sensitivity to 16,384 LSB changes per 1 g of change
@@ -44,6 +45,7 @@ void MPU_6050_Wire::setAccelConfig(uint8_t AFS) {
 void MPU_6050_Wire::setGyroConfig(uint8_t GFS) {
     Wire.beginTransmission(this->address);
     Wire.write(byte(GYRO_CONFIG_REG));
+    this->GFS = GFS;
     switch (GFS) {
         case 0:
             Wire.write(B00000000); // Set Full Scale Range to +- 250 deg/s & Set Sensitivity to 131 LSB changes per 1 degree/s change
@@ -150,4 +152,42 @@ int16_t MPU_6050_Wire::readTemp() {
 
     return this->Temp;
 
-}
+};
+
+double MPU_6050_Wire::accelInGs(int16_t rawAccel) {
+    switch (this->AFS) {
+        case 0:
+
+            break;
+        case 1:
+            
+            break;
+        case 2:
+
+            break;
+        case 3:
+
+            break;
+    }
+};
+
+double MPU_6050_Wire::gyroInDegPerSec(int16_t rawGyro) {
+    switch (this->GFS) {
+        case 0:
+
+            break;
+        case 1:
+            
+            break;
+        case 2:
+
+            break;
+        case 3:
+
+            break;
+    }
+};
+
+double MPU_6050_Wire::tempInCelcius(int16_t rawTemp) {
+
+};
