@@ -157,16 +157,16 @@ int16_t MPU_6050_Wire::readTemp() {
 double MPU_6050_Wire::accelInGs(int16_t rawAccel) {
     switch (this->AFS) {
         case 0:
-
+            return ((double)rawAccel / 16384);
             break;
         case 1:
-            
+            return ((double)rawAccel / 8192);
             break;
         case 2:
-
+            return ((double)rawAccel / 4096);
             break;
         case 3:
-
+            return ((double)rawAccel / 2048);
             break;
     }
 };
@@ -174,20 +174,20 @@ double MPU_6050_Wire::accelInGs(int16_t rawAccel) {
 double MPU_6050_Wire::gyroInDegPerSec(int16_t rawGyro) {
     switch (this->GFS) {
         case 0:
-
+            return ((double)rawGyro / 131);
             break;
         case 1:
-            
+            return ((double)rawGyro / 65.5);
             break;
         case 2:
-
+            return ((double)rawGyro / 32.8);
             break;
         case 3:
-
+            return ((double)rawGyro / 16.4);
             break;
     }
 };
 
 double MPU_6050_Wire::tempInCelcius(int16_t rawTemp) {
-
+    return (((double)rawTemp / 340) + 36.53);
 };
