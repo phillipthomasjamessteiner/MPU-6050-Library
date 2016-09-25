@@ -1,0 +1,55 @@
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+MPU_6050_Wire	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+setAccelConfig	KEYWORD2
+
+setGyroConfig	KEYWORD2
+
+accelInGs	KEYWORD2
+
+gyroInDegPerSec	KEYWORD2
+
+tempInCelcius	KEYWORD2
+
+readAccelX	KEYWORD2
+
+readAccelY	KEYWORD2
+
+readAccelZ	KEYWORD2
+
+readGyroX	KEYWORD2
+
+readGyroY	KEYWORD2
+
+readGyroZ	KEYWORD2
+
+readTemp	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+ACCELX_REG	LITERAL1
+
+ACCELY_REG	LITERAL1
+
+ACCELZ_REG	LITERAL1
+
+GYROX_REG	LITERAL1
+
+GYROY_REG	LITERAL1
+
+GYROZ_REG	LITERAL1
+
+TEMP_REG
+
+ACCEL_CONFIG_REG	LITERAL1
+
+GYRO_CONFIG_REG	LITERAL1
